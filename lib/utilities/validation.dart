@@ -16,6 +16,22 @@ class Validators {
   }
 
 
+  String? validatorFirstName(value) {
+    if (value.isEmpty) {
+      return "Please enter your first name";
+    }
+    return null;
+  }
+
+
+  String? validatorLastName(value) {
+    if (value.isEmpty) {
+      return "Please enter your last name";
+    }
+    return null;
+  }
+
+
 
   String? validatorFullName(value) {
     if (value.isEmpty) {
@@ -93,6 +109,13 @@ class Validators {
   String? validateMobile(value) {
     if (value.isEmpty) {
       return "Please Enter Mobile Number";
+    }
+    return null;
+  }
+
+  String? validateGSt(value) {
+    if (value.isEmpty) {
+      return "Please Enter GST  Number";
     }
     return null;
   }

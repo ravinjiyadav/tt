@@ -1,8 +1,10 @@
-import 'package:book_your_truck/utilities/color_utility.dart';
-import 'package:book_your_truck/utilities/style_utility.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
+
+import '../../utilities/color_utility.dart' show ColorUtility;
+import '../../utilities/style_utility.dart';
 
 class CustomOtpField extends StatelessWidget {
   final TextEditingController controller;
@@ -27,7 +29,7 @@ class CustomOtpField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Pinput(
       controller: controller,
-      length: length ?? 4,
+      length: length ?? 6,
       animationDuration: const Duration(seconds: 1),
       defaultPinTheme: defaultPinTheme,
       keyboardType: TextInputType.number,
@@ -36,10 +38,10 @@ class CustomOtpField extends StatelessWidget {
         controller.text = pin;
       },
       onCompleted: (pin) {
-       // AppLogger.logD('onCompleted: $pin');
+        // AppLogger.logD('onCompleted: $pin');
       },
       onChanged: (value) {
-       // AppLogger.logD('onChanged: $value');
+        // AppLogger.logD('onChanged: $value');
       },
       focusedPinTheme: defaultPinTheme.copyDecorationWith(
         border: Border.all(color: ColorUtility.textFieldBorderColor, width: 1.w),

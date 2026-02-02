@@ -50,6 +50,7 @@ class AppNotifier {
     );
 
 
+
     scaffoldMessengerKey.currentState
       ?..hideCurrentSnackBar()
       ..showSnackBar(snackBar);

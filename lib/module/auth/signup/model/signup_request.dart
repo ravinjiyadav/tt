@@ -1,15 +1,17 @@
 class SignupRequest {
-  String? name;
+  String? fName;
+  String? lName;
   String? email;
   String? phone;
   String? gender;
   String? gst_number;
 
   SignupRequest(
-      {this.name, this.email, this.phone, this.gender, this.gst_number});
+      {this.fName,this.lName, this.email, this.phone, this.gender, this.gst_number});
 
   SignupRequest.fromJson(Map<String, dynamic> json) {
-    name = json['firstname'];
+    fName = json['firstname'];
+    lName = json['lastname'];
     email = json['email'];
     phone = json['phone'];
     gender = json['gender'];
@@ -18,11 +20,12 @@ class SignupRequest {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
+    data['firstname'] = this.fName;
+    data['lastname'] = this.lName;
     data['email'] = this.email;
     data['phone'] = this.phone;
     data['gender'] = this.gender;
-    data['transport_name'] = this.gst_number;
+    data['gst_number'] = this.gst_number;
     return data;
   }
 }

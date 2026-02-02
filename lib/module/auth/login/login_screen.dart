@@ -258,11 +258,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //
                                 //   return;
                                 // }
-                                AppNotifier.showErrorSnackBar(
-                                  message: "Hello",
-                                );
-
-                                AppLogger.logD("Hello");
 
                                 if (_formKey.currentState!.validate()) {
 

@@ -72,18 +72,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     title: "Your Name",
                     controller: fNameController,
                     hintText: "Enter your name",
-                     validator: Validators(context).validatorFullName,
+                     validator: Validators(context).validatorFirstName,
 
                   ),
 
-                  // SizedBox(height: 16.h),
-                  //
-                  // SimpleTextField(
-                  //   preffixImage: ImageUtility.userIcon,
-                  //   title: "Last Name",
-                  //   controller: lNameController,
-                  //   hintText: "Enter last name",
-                  // ),
+                  SizedBox(height: 16.h),
+
+                  SimpleTextField(
+                    preffixImage: ImageUtility.userIcon,
+                    title: "Last Name",
+                    controller: lNameController,
+                    hintText: "Enter last name",
+                      validator: Validators(context).validatorLastName
+                  ),
                   SizedBox(height: 16.h),
 
                   SimpleTextField(
@@ -101,7 +102,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     preffixImage: ImageUtility.gstIcon,
                     title: "GST Number",
                     controller: gstController,
+                    textInputType: TextInputType.number,
                     hintText: "Enter GST number",
+                    validator: Validators(context).validateGSt,
                   ),
 
                   SizedBox(height: 16.h),
@@ -238,7 +241,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           return;
     }
                           signUpProvider?.request = SignupRequest(
-                            name: fNameController.text.trim(),
+                            fName: fNameController.text.trim(),
+                            lName: lNameController.text.trim(),
                             email: emailController.text.trim(),
                             phone: mobileController.text,
                             gst_number: gstController.text.trim(),

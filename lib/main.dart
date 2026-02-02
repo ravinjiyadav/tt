@@ -1,4 +1,5 @@
 import 'package:book_your_truck/routes/app_routes.dart';
+import 'package:book_your_truck/utilities/app_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: scaffoldMessengerKey,
 
           title: 'First Method',
           // You can use the library anywhere in the app even in theme
