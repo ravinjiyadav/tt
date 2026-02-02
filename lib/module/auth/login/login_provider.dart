@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import '../../../logger/app_logger.dart';
 import '../../../network/repository/auth_repository.dart';
 import 'model/login_request.dart';
 
 class LoginProvider extends ChangeNotifier {
   final AuthRepository authRepository = AuthRepository();
 
-  get AppLogger => null;
 
   void logIn({
     required ValueChanged<String> onSuccess,
@@ -25,7 +25,7 @@ class LoginProvider extends ChangeNotifier {
       }
     })
         .onError((error, stackTrace) {
-      AppLogger.logD("error $error");
+      AppLogger.logD("error ${error.toString()}");
       onFailure.call(error.toString());
     });
   }
