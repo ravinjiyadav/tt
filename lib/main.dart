@@ -1,15 +1,7 @@
-import 'package:book_your_truck/module/profile/trip_history_screen.dart';
+import 'package:book_your_truck/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'module/auth/login_screen.dart';
-import 'module/auth/verify_otp_screen.dart';
-import 'module/bottomabar/bookings/booking_details/booking_details_screen.dart';
-import 'module/bottomabar/bottombar.dart';
-import 'module/bottomabar/help/help_screen.dart';
-import 'module/paymentHistory/payment_history_screen.dart';
-import 'module/profile/edit_profile_screen.dart';
 import 'module/splash_screen.dart';
 
 void main() async {
@@ -33,7 +25,6 @@ class MyApp extends StatelessWidget {
       // Use builder only if you need to use library outside ScreenUtilInit context
       builder: (_, child) {
         return MaterialApp(
-
           debugShowCheckedModeBanner: false,
 
           title: 'First Method',
@@ -44,26 +35,30 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
 
             primarySwatch: Colors.blue,
-           // textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
 
-
-
+            // textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
           ),
+
+          onGenerateRoute: AppRoute.generateRoute,
+
+        //  home: const SplashScreen(),
           home: child,
         );
       },
       // child:  SignupScreen(),
       // child:  LoginScreen(),
-    //  child: VerifyOtpScreen(),
+      //  child: VerifyOtpScreen(),
       //  child:  EditProfileScreen(),
-       // child:  PaymentHistoryScreen(),
-       //child:  TripsHistoryScreen(),
+      // child:  PaymentHistoryScreen(),
+      //child:  TripsHistoryScreen(),
       //  child:  HelpScreen(),
       // child:  ProfileScreen(),
-     //  child:  BottomNavigationBarScreen(),
-       child:  SplashScreen(),
+      //  child:  BottomNavigationBarScreen(),
 
-    //   child:  BookingDetailsScreen(),
+
+      child: SplashScreen(),
+
+      //   child:  BookingDetailsScreen(),
     );
   }
 }

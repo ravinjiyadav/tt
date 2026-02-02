@@ -1,4 +1,3 @@
-import 'package:book_your_truck/module/auth/login_screen.dart';
 import 'package:book_your_truck/module/paymentHistory/payment_history_screen.dart';
 import 'package:book_your_truck/module/profile/edit_profile_screen.dart';
 import 'package:book_your_truck/utilities/color_utility.dart';
@@ -8,6 +7,8 @@ import 'package:book_your_truck/module/profile/trip_history_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../auth/login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
