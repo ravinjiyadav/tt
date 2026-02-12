@@ -8,6 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../routes/app_routes.dart';
+import '../../utilities/shared_preference.dart';
 import '../auth/login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -87,11 +89,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               isSuffix: false,
               onTap: (){
 
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false, // ❗ removes all previous routes
-                );
+                Preference().clearSharedPreference();
+                AppRoute.loginScreen(context);
               },
             ),
           ],

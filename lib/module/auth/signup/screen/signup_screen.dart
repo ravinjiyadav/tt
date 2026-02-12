@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
@@ -47,6 +48,8 @@ class _SignupScreenState extends State<SignupScreen> {
   void initState() {
     super.initState();
     signUpProvider = Provider.of<SignUpProvider>(context, listen: false);
+
+    gstController.text = kDebugMode ? "09AAACH7409R1ZZ" : "";
   }
 
   @override
@@ -102,7 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     preffixImage: ImageUtility.gstIcon,
                     title: "GST Number",
                     controller: gstController,
-                    textInputType: TextInputType.number,
+                    textInputType: TextInputType.text,
                     hintText: "Enter GST number",
                     validator: Validators(context).validateGSt,
                   ),
