@@ -346,6 +346,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                             ),
 
+                            CustomButton(
+                              buttonText: "Create Order",
+                              type: ButtonType.border,
+                              onTap: () {
+                                AppRoute.createOrderScreen(context);
+                              },
+                            ),
+
+
+
                             SizedBox(height: 32.h),
                           ],
                         ),

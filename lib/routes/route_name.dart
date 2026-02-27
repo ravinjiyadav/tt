@@ -7,6 +7,8 @@ class RouteName {
   static const String bottomNavigationBarScreen = "/bottomNavigationBarScreen";
   static const String editProfileScreen = "/editProfileScreen";
 
+  static const String createOrderScreen = "/createOrderScreen";
+
 
 
 

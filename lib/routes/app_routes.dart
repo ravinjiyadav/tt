@@ -1,4 +1,5 @@
 import 'package:book_your_truck/module/bottomabar/bottombar.dart';
+import 'package:book_your_truck/module/create_order/create_order_vm.dart';
 import 'package:book_your_truck/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import '../module/auth/signup/provider/signup_provider.dart';
 import '../module/auth/signup/screen/signup_screen.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_provider.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_screen.dart';
+import '../module/create_order/create_order_screen.dart';
 import '../module/splash_screen.dart';
 
 class AppRoute {
@@ -29,6 +31,7 @@ class AppRoute {
           ),
         );
 
+
       case RouteName.verifyOtLoginScreen:
         var arg = settings.arguments as Map;
 
@@ -44,7 +47,19 @@ class AppRoute {
           builder: (context) => BottomNavigationBarScreen(),
         );
 
-      // case RouteName.editProfileScreen:
+
+      case RouteName.createOrderScreen:
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) => CreateOrderVm(),
+            child: CreateOrderScreen(),
+          ),
+        );
+
+
+
+
+    // case RouteName.editProfileScreen:
       //   return MaterialPageRoute(
       //     builder: (context) => ChangeNotifierProvider(
       //       create: (_) => EditProfileProvider(),
@@ -93,6 +108,17 @@ class AppRoute {
   static Future<T?> editProfileScreen<T>(BuildContext context) async {
     return Navigator.pushNamed<T>(context, RouteName.editProfileScreen);
   }
+
+
+  static Future<void> createOrderScreen(
+      BuildContext context,
+      ) async {
+    Navigator.pushNamed(
+      context,
+      RouteName.createOrderScreen
+    );
+  }
+
 
   //
 }

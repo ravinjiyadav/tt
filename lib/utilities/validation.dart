@@ -130,6 +130,16 @@ class Validators {
     return null;
   }
 
+  String? requireField(value) {
+    if (value.isEmpty) {
+      return "Please enter required field";
+    }
+    return null;
+  }
+
+
+
+
   //
   // String? validatorPassword(value) {
   //   if (value.isEmpty) {
