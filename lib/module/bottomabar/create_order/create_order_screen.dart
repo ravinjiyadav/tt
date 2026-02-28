@@ -10,8 +10,8 @@ import '../../../../utilities/validation.dart';
 import '../../../../widgets/buttons/custom_button.dart';
 import '../../../../widgets/common_app_bar.dart';
 import '../../../../widgets/textField/simple_text_field.dart';
-import '../../utilities/style_utility.dart';
-import '../../utilities/text_size_utility.dart';
+import '../../../utilities/style_utility.dart';
+import '../../../utilities/text_size_utility.dart';
 import 'create_order_vm.dart';
 import 'model/create_order_request.dart';
 

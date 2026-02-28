@@ -11,6 +11,9 @@ class RouteName {
   static const String loadListScreen = "/loadListScreen";
 
 
+  static const String bidsScreen = "/bidsScreen";
+
+
 
 
 }

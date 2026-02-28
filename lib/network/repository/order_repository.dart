@@ -1,5 +1,6 @@
-import 'package:book_your_truck/module/create_order/model/create_order_request.dart';
+import 'package:book_your_truck/module/bottomabar/order_bids/bids_model.dart';
 
+import '../../module/bottomabar/create_order/model/create_order_request.dart';
 import '../../module/bottomabar/order_request/model/order_request_model.dart';
 import '../client/dio_http_service.dart';
 import '../end_points.dart';
@@ -20,6 +21,11 @@ class OrderRepository {
         .then((value) => OrderRequestModel.fromJson(value));
   }
 
+  Future<BidsModel> getBidsList(int id) {
+    return dioHttpService
+        .get(Endpoints.apiEndPoints.bidList(id))
+        .then((value) => BidsModel.fromJson(value));
+  }
 
 
 }

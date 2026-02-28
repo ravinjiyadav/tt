@@ -1,17 +1,20 @@
 import 'package:book_your_truck/module/bottomabar/bottombar.dart';
-import 'package:book_your_truck/module/create_order/create_order_vm.dart';
+import 'package:book_your_truck/module/bottomabar/order_bids/bids_screen.dart';
+import 'package:book_your_truck/module/bottomabar/order_bids/bids_vm.dart';
 import 'package:book_your_truck/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../module/auth/login/login_provider.dart';
 import '../module/auth/login/login_screen.dart';
 import '../module/auth/signup/provider/signup_provider.dart';
 import '../module/auth/signup/screen/signup_screen.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_provider.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_screen.dart';
+import '../module/bottomabar/create_order/create_order_screen.dart';
+import '../module/bottomabar/create_order/create_order_vm.dart';
 import '../module/bottomabar/order_request/order_request_list_screen.dart';
 import '../module/bottomabar/order_request/order_request_list_vm.dart';
-import '../module/create_order/create_order_screen.dart';
 import '../module/splash_screen.dart';
 
 class AppRoute {
@@ -33,7 +36,6 @@ class AppRoute {
           ),
         );
 
-
       case RouteName.verifyOtLoginScreen:
         var arg = settings.arguments as Map;
 
@@ -48,7 +50,6 @@ class AppRoute {
         return MaterialPageRoute(
           builder: (context) => BottomNavigationBarScreen(),
         );
-
 
       case RouteName.createOrderScreen:
         return MaterialPageRoute(
@@ -66,16 +67,16 @@ class AppRoute {
           ),
         );
 
+      case RouteName.bidsScreen:
+        var arg = settings.arguments as Map;
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) => BidsVm(),
+            child: BidsScreen(id: arg["id"]),
+          ),
+        );
 
-
-
-
-
-
-
-
-
-    // case RouteName.editProfileScreen:
+      // case RouteName.editProfileScreen:
       //   return MaterialPageRoute(
       //     builder: (context) => ChangeNotifierProvider(
       //       create: (_) => EditProfileProvider(),
@@ -125,28 +126,17 @@ class AppRoute {
     return Navigator.pushNamed<T>(context, RouteName.editProfileScreen);
   }
 
-
-  static Future<void> createOrderScreen(
-      BuildContext context,
-      ) async {
-    Navigator.pushNamed(
-      context,
-      RouteName.createOrderScreen
-    );
+  static Future<void> createOrderScreen(BuildContext context) async {
+    Navigator.pushNamed(context, RouteName.createOrderScreen);
   }
 
-  static Future<void> loadListScreen(
-      BuildContext context,
-      ) async {
-    Navigator.pushNamed(
-        context,
-        RouteName.loadListScreen
-    );
+  static Future<void> loadListScreen(BuildContext context) async {
+    Navigator.pushNamed(context, RouteName.loadListScreen);
   }
 
-
-
-
+  static Future<void> bidsScreen(BuildContext context, int id) async {
+    Navigator.pushNamed(context, RouteName.bidsScreen, arguments: {"id": id});
+  }
 
   //
 }

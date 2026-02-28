@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../../../logger/app_logger.dart';
-import '../../network/repository/order_repository.dart';
+import '../../../network/repository/order_repository.dart';
 import 'model/create_order_request.dart';
 
 class CreateOrderVm extends ChangeNotifier {

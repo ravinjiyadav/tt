@@ -1,3 +1,4 @@
+import 'package:book_your_truck/routes/app_routes.dart';
 import 'package:book_your_truck/utilities/app_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -180,17 +181,19 @@ class LoadCard extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text("View Details"),
+                  onPressed: () {
+
+                    if((order.bidCount ?? 0) > 0){
+                      AppRoute.bidsScreen(context, order.id ?? 0);
+                    }else{
+
+                      AppNotifier.showInfoSnackBar(message: "No bids yet");
+                    }
+                  },
+                  child: const Text("View Bids"),
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Place Bid"),
-                ),
-              ),
             ],
           ),
         ],
