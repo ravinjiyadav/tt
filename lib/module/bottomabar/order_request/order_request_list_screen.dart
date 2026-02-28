@@ -1,8 +1,13 @@
 import 'package:book_your_truck/routes/app_routes.dart';
 import 'package:book_your_truck/utilities/app_notifier.dart';
+import 'package:book_your_truck/widgets/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utilities/enums.dart';
+import '../../../utilities/style_utility.dart';
+import '../../../widgets/common_app_bar.dart';
 import '../../../widgets/custom_circular_loader_widget.dart';
 import 'model/order_request_model.dart';
 import 'order_request_list_vm.dart';
@@ -44,31 +49,35 @@ class _LoadListScreenState extends State<LoadListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Created Order Request")),
-      body: Consumer<OrderRequestListVm>(builder: (context, provider, child){
+    //  appBar: AppBar(title: const Text("Created Order Request")),
 
-        return  provider.isLoading == true
-            ? CustomCircularLoaderWidget()
-            :
-
-
-
-
-        provider.orderRequestModel.order?.isEmpty ?? true ?
-
-        Center(child: NoDataWidget(),) :
-
-
-        ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: provider.orderRequestModel.order?.length,
-          itemBuilder: (context, index) {
-            final data = provider.orderRequestModel.order?[index];
-            return LoadCard(order: data!);
-          },
-        );
-
-      })
+      appBar:commonAppBar(title: "Created Order Request"),
+      body: SafeArea(
+        child: Consumer<OrderRequestListVm>(builder: (context, provider, child){
+        
+          return  provider.isLoading == true
+              ? CustomCircularLoaderWidget()
+              :
+        
+        
+        
+        
+          provider.orderRequestModel.order?.isEmpty ?? true ?
+        
+          Center(child: NoDataWidget(),) :
+        
+        
+          ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: provider.orderRequestModel.order?.length,
+            itemBuilder: (context, index) {
+              final data = provider.orderRequestModel.order?[index];
+              return LoadCard(order: data!);
+            },
+          );
+        
+        }),
+      )
 
 
 
@@ -108,10 +117,11 @@ class LoadCard extends StatelessWidget {
 
               Text(
                 "₹ ${order.budgetRangeMin} - ${order.budgetRangeMax}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                style: StyleUtility.manropeSemiBold16Color19191A.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
                 ),
+
               ),
             ],
           ),
@@ -126,10 +136,11 @@ class LoadCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   "${order.pickupCity}  →  ${order.dropoffCity}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+
+                  style: StyleUtility.manropeMedium16Color1E1E2D,
+
+
+
                 ),
               ),
             ],
@@ -144,6 +155,7 @@ class LoadCard extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 "${order.cargoWeight} Ton | ${order.preferredVehicleType}",
+                style: StyleUtility.manropeMedium14Color719191A,
               ),
             ],
           ),
@@ -157,6 +169,7 @@ class LoadCard extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 "${order.pickupDate} | ${order.pickupTimePreference}",
+                style: StyleUtility.manropeMedium14Color719191A,
               ),
             ],
           ),
@@ -170,32 +183,28 @@ class LoadCard extends StatelessWidget {
             children: [
               const Icon(Icons.gavel, size: 18),
               const SizedBox(width: 6),
-              Text("${order.bidCount} Bids"),
+              Text("${order.bidCount} Bids",  style: StyleUtility.manropeMedium14Color719191A,),
             ],
           ),
 
           const SizedBox(height: 16),
 
           /// BUTTONS
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
+          CustomButton(
 
-                    if((order.bidCount ?? 0) > 0){
-                      AppRoute.bidsScreen(context, order.id ?? 0);
-                    }else{
+            type: ButtonType.border,
+            onTap: () {
 
-                      AppNotifier.showInfoSnackBar(message: "No bids yet");
-                    }
-                  },
-                  child: const Text("View Bids"),
-                ),
-              ),
-              const SizedBox(width: 10),
-            ],
-          ),
+              if((order.bidCount ?? 0) > 0){
+                AppRoute.bidsScreen(context, order.id ?? 0);
+              }else{
+
+                AppNotifier.showInfoSnackBar(message: "No bids yet");
+              }
+            },
+            buttonText: "View Bids",),
+
+          const SizedBox(width: 10),
         ],
       ),
     );

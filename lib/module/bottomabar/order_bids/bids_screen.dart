@@ -1,14 +1,17 @@
 import 'package:book_your_truck/utilities/app_notifier.dart';
+import 'package:book_your_truck/utilities/color_utility.dart';
+import 'package:book_your_truck/widgets/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/common_app_bar.dart';
 import '../../../widgets/custom_circular_loader_widget.dart';
 import 'bids_model.dart';
 import 'bids_vm.dart';
 
 class BidsScreen extends StatefulWidget {
+  final int id;
 
- final int id;
   const BidsScreen({super.key, required this.id});
 
   @override
@@ -39,22 +42,26 @@ class _BidsScreenState extends State<BidsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Bids")),
-      body: Consumer<BidsVm>(
-        builder: (context, provider, child) {
-          return provider.isLoading == true
-              ? CustomCircularLoaderWidget()
-              : provider.bidsModel.data?.isEmpty ?? true
-              ? Center(child: NoDataWidget())
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: provider.bidsModel.data?.length,
-                  itemBuilder: (context, index) {
-                    final data = provider.bidsModel.data?[index];
-                    return BidCard(bid: data!);
-                  },
-                );
-        },
+
+      appBar:commonAppBar(title: "Bids"),
+
+      body: SafeArea(
+        child: Consumer<BidsVm>(
+          builder: (context, provider, child) {
+            return provider.isLoading == true
+                ? CustomCircularLoaderWidget()
+                : provider.bidsModel.data?.isEmpty ?? true
+                ? Center(child: NoDataWidget())
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: provider.bidsModel.data?.length,
+                    itemBuilder: (context, index) {
+                      final data = provider.bidsModel.data?[index];
+                      return BidCard(bid: data!);
+                    },
+                  );
+          },
+        ),
       ),
     );
   }
@@ -73,6 +80,10 @@ class BidCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
+
+        border: Border.all(
+          color: ColorUtility.color8D98AF
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -154,23 +165,31 @@ class BidCard extends StatelessWidget {
           const SizedBox(height: 16),
 
           /// BUTTONS
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text("View Profile"),
+          ///
+          ///
+          bid.status == "active"
+              ?  CustomButton(onTap: () {}, buttonText: "Accept")
+              :   bid.status == "selected" ? Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "This bid has been selected. Admin has been notified.",
+                    style: TextStyle(color: Colors.green,fontSize: 16,fontWeight: FontWeight.w600),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Select Bid"),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ):SizedBox(),
+
+          const SizedBox(width: 10),
         ],
       ),
     );
