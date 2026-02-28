@@ -7,6 +7,7 @@ import 'package:book_your_truck/widgets/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../routes/app_routes.dart';
 import '../notification/notification_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -154,10 +155,14 @@ class _LocationInputCard extends StatelessWidget {
         const SizedBox(width: 12),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SelectLocationScreen()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => SelectLocationScreen()),
+            // );
+
+            AppRoute.createOrderScreen(context);
+
+
           },
           child: CircleAvatar(
             radius: 24,

@@ -9,7 +9,7 @@ class CreateOrderVm extends ChangeNotifier {
 
   CreateOrderRequest request = CreateOrderRequest();
 
-  void signup({
+  void createRide({
     required ValueChanged<String> onSuccess,
     required ValueChanged<String> onFailure,
     required CreateOrderRequest request,

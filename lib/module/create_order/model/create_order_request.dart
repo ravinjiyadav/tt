@@ -7,14 +7,14 @@ class CreateOrderRequest {
   double? pickupLng;
   double? dropoffLat;
   double? dropoffLng;
-  int? cargoWeight;
+  String? cargoWeight;
   String? cargoDescription;
   String? preferredVehicleType;
   String? pickupDate;
   String? pickupTimePreference;
   String? specialRequirements;
-  int? budgetRangeMin;
-  int? budgetRangeMax;
+  String? budgetRangeMin;
+  String? budgetRangeMax;
 
   CreateOrderRequest(
       {this.pickupCity,
