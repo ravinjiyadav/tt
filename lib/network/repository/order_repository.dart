@@ -16,7 +16,7 @@ class OrderRepository {
 
   Future<OrderRequestModel> getOrderList() {
     return dioHttpService
-        .post(Endpoints.apiEndPoints.orderRequestsList)
+        .get(Endpoints.apiEndPoints.orderRequestsList)
         .then((value) => OrderRequestModel.fromJson(value));
   }
 

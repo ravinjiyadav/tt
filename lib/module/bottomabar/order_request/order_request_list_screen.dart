@@ -106,7 +106,7 @@ class LoadCard extends StatelessWidget {
             children: [
 
               Text(
-                "₹ ${order.budgetRangeMin} - ${order.budgetRangeMin}",
+                "₹ ${order.budgetRangeMin} - ${order.budgetRangeMax}",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

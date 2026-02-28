@@ -35,14 +35,14 @@ class Order {
   double? pickupLng;
   double? dropoffLat;
   double? dropoffLng;
-  double? cargoWeight;
+  dynamic? cargoWeight;
   String? cargoDescription;
   String? preferredVehicleType;
   String? pickupDate;
   String? pickupTimePreference;
   String? specialRequirements;
-  int? budgetRangeMin;
-  int? budgetRangeMax;
+  dynamic? budgetRangeMin;
+  dynamic? budgetRangeMax;
   String? status;
   String? expiresAt;
   int? selectedBidId;
