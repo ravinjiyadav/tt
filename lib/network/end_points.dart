@@ -17,5 +17,6 @@ class ApiEndPoints {
   String get signup => "customers/register";
   String get fetchProfile => "vendors/";
   String get orderRequests => "order-requests";
+  String get orderRequestsList => "order-requests";
 
 }

@@ -9,6 +9,8 @@ import '../module/auth/signup/provider/signup_provider.dart';
 import '../module/auth/signup/screen/signup_screen.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_provider.dart';
 import '../module/auth/verifyOtpLogin/verify_otp_login_screen.dart';
+import '../module/bottomabar/order_request/order_request_list_screen.dart';
+import '../module/bottomabar/order_request/order_request_list_vm.dart';
 import '../module/create_order/create_order_screen.dart';
 import '../module/splash_screen.dart';
 
@@ -55,6 +57,20 @@ class AppRoute {
             child: CreateOrderScreen(),
           ),
         );
+
+      case RouteName.loadListScreen:
+        return MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) => OrderRequestListVm(),
+            child: LoadListScreen(),
+          ),
+        );
+
+
+
+
+
+
 
 
 
@@ -118,6 +134,18 @@ class AppRoute {
       RouteName.createOrderScreen
     );
   }
+
+  static Future<void> loadListScreen(
+      BuildContext context,
+      ) async {
+    Navigator.pushNamed(
+        context,
+        RouteName.loadListScreen
+    );
+  }
+
+
+
 
 
   //

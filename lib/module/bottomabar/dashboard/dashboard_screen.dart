@@ -25,6 +25,15 @@ class DashboardScreen extends StatelessWidget {
             SizedBox(height: 29.h),
             _LocationInputCard(),
             SizedBox(height: 28.h),
+            CustomButton(buttonText: "View Created Orders", onTap: (){
+
+
+              AppRoute.loadListScreen(context);
+
+            }),
+
+
+            SizedBox(height: 28.h),
             _BannerCard(),
             SizedBox(height: 21.h),
             _CheckPriceCard(),
