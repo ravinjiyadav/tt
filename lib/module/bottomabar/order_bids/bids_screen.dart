@@ -1,5 +1,6 @@
 import 'package:book_your_truck/utilities/app_notifier.dart';
 import 'package:book_your_truck/utilities/color_utility.dart';
+import 'package:book_your_truck/utilities/common.dart';
 import 'package:book_your_truck/widgets/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +58,32 @@ class _BidsScreenState extends State<BidsScreen> {
                     itemCount: provider.bidsModel.data?.length,
                     itemBuilder: (context, index) {
                       final data = provider.bidsModel.data?[index];
-                      return BidCard(bid: data!);
+                      return BidCard(
+                        bid: data!,
+                        onAccept: (){
+
+                          CommonMethod.showLoadingDialog(context);
+                          provider.acceptBid( onSuccess: (message) {
+
+                            Navigator.pop(context);
+                            AppNotifier.showSuccessSnackBar(message: message);
+                            provider.getBidsList(
+                              id: widget.id,
+                              onSuccess: (message) {},
+                              onFailure: (message) {
+                                AppNotifier.showErrorSnackBar(message: message);
+                              },
+                            );
+
+
+                          },
+                              onFailure: (message) {
+                                Navigator.pop(context);
+                                AppNotifier.showErrorSnackBar(message: message);
+                              },
+                              id: data.id ?? 0);
+                        },
+                      );
                     },
                   );
           },
@@ -69,8 +95,9 @@ class _BidsScreenState extends State<BidsScreen> {
 
 class BidCard extends StatelessWidget {
   final BidsData bid;
+  final VoidCallback onAccept;
 
-  const BidCard({super.key, required this.bid});
+  const BidCard({super.key, required this.bid, required this.onAccept});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +195,7 @@ class BidCard extends StatelessWidget {
           ///
           ///
           bid.status == "active"
-              ?  CustomButton(onTap: () {}, buttonText: "Accept")
+              ?  CustomButton(onTap: onAccept, buttonText: "Accept")
               :   bid.status == "selected" ? Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(

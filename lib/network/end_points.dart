@@ -25,6 +25,8 @@ class ApiEndPoints {
 
   String bidList(int id) => "/order-requests/$id/bids";
 
+  String acceptBid(int id) => "/bids/$id/accept";
+
 
 
 }

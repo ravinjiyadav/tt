@@ -28,4 +28,12 @@ class OrderRepository {
   }
 
 
+  Future<BasicResponse> acceptBid(int id) {
+    return dioHttpService
+        .post(Endpoints.apiEndPoints.acceptBid(id))
+        .then((value) => BasicResponse.fromJson(value));
+  }
+
+
+
 }

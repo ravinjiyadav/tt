@@ -40,6 +40,34 @@ class BidsVm extends ChangeNotifier {
         });
   }
 
+  void acceptBid({
+    required ValueChanged<String> onSuccess,
+    required ValueChanged<String> onFailure,
+    required int id,
+  }) {
+
+    orderRepository
+        .acceptBid(id)
+        .then((value) {
+      if (value.success == true) {
+
+        onSuccess.call(value.msg ?? "Success");
+      } else {
+        onSuccess.call(value.msg ?? "failed");
+      }
+
+      updateUi();
+    })
+        .onError((error, stackTrace) {
+
+      AppLogger.logD("error $error");
+      onFailure.call(error.toString());
+    });
+  }
+
+
+
+
   void updateUi() {
     notifyListeners();
   }
