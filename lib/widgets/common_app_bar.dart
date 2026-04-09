@@ -8,12 +8,12 @@ PreferredSizeWidget commonAppBar({
   List<Widget>? actions,
 }) {
   return AppBar(
-  //  backgroundColor: ColorUtility.backgroundColor,
-    backgroundColor: Colors.white,
+    backgroundColor: ColorUtility.colorEA580C,
+  //  backgroundColor: Colors.white,
     elevation: 2,
     centerTitle: false,
     leading: showBack
-        ? BackButton(color: Colors.black)
+        ? BackButton(color: Colors.white)
         : null,
     title: Text(
       title,

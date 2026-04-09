@@ -10,8 +10,10 @@ import '../../../../utilities/validation.dart';
 import '../../../../widgets/buttons/custom_button.dart';
 import '../../../../widgets/common_app_bar.dart';
 import '../../../../widgets/textField/simple_text_field.dart';
+import '../../../utilities/image_utility.dart';
 import '../../../utilities/style_utility.dart';
 import '../../../utilities/text_size_utility.dart';
+import '../../../widgets/select_google_location_screen.dart';
 import 'create_order_vm.dart';
 import 'model/create_order_request.dart';
 
@@ -76,12 +78,35 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 children: [
                   SizedBox(height: 15.h),
 
+
                   SimpleTextField(
                     // preffixImage: ImageUtility.userIcon,
                     title: "Pickup Address",
                     controller: pickupAddressController,
                     hintText: "Enter pickup address",
                     validator: Validators(context).requireField,
+                    readOnly: true,
+                    onTap: () async {
+
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AutocompleteLocationScreen(),
+                        ),
+                      );
+
+                      if (result != null) {
+                        setState(() {
+                         String locationName = result.description;
+                        var  lat = double.tryParse(result.lat ?? "");
+                         var lng = double.tryParse(result.lng ?? "");
+                         pickupAddressController.text = locationName ?? "";
+
+                        });
+                      }
+
+
+                    },
                   ),
 
                   SizedBox(height: 16.h),
@@ -92,26 +117,48 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     controller: dropAddressController,
                     hintText: "Enter drop off address",
                     validator: Validators(context).requireField,
-                  ),
-                  SizedBox(height: 16.h),
+                    readOnly: true,
+                    onTap: () async {
 
-                  SimpleTextField(
-                    // preffixImage: ImageUtility.userIcon,
-                    title: "Pickup City",
-                    controller: pickupCityController,
-                    hintText: "Enter pickup city",
-                    validator: Validators(context).requireField,
-                  ),
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AutocompleteLocationScreen(),
+                        ),
+                      );
 
-                  SizedBox(height: 16.h),
+                      if (result != null) {
+                        setState(() {
+                          String locationName = result.description;
+                          var  lat = double.tryParse(result.lat ?? "");
+                          var lng = double.tryParse(result.lng ?? "");
+                          dropAddressController.text = locationName ?? "";
 
-                  SimpleTextField(
-                    // preffixImage: ImageUtility.userIcon,
-                    title: "Drop Off City",
-                    controller: dropCityController,
-                    hintText: "Enter drop off city",
-                    validator: Validators(context).requireField,
+                        });
+                      }
+
+
+                    },
                   ),
+                  // SizedBox(height: 16.h),
+                  //
+                  // SimpleTextField(
+                  //   // preffixImage: ImageUtility.userIcon,
+                  //   title: "Pickup City",
+                  //   controller: pickupCityController,
+                  //   hintText: "Enter pickup city",
+                  //   validator: Validators(context).requireField,
+                  // ),
+                  //
+                  // SizedBox(height: 16.h),
+                  //
+                  // SimpleTextField(
+                  //   // preffixImage: ImageUtility.userIcon,
+                  //   title: "Drop Off City",
+                  //   controller: dropCityController,
+                  //   hintText: "Enter drop off city",
+                  //   validator: Validators(context).requireField,
+                  // ),
                   SizedBox(height: 16.h),
 
                   SimpleTextField(
@@ -126,10 +173,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
                   SimpleTextField(
                     //   preffixImage: ImageUtility.gstIcon,
-                    title: "Cargo Description",
+                    title: "Material Type",
                     controller: cargoDescriptionController,
                     textInputType: TextInputType.text,
-                    hintText: "Enter cargo description",
+                    hintText: "Enter material type",
                     validator: Validators(context).requireField,
                   ),
 
@@ -160,34 +207,34 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     },
                   ),
 
-                  SizedBox(height: 16.h),
+                  // SizedBox(height: 16.h),
+                  //
+                  // SimpleTextField(
+                  //   //  preffixImage: ImageUtility.gstIcon,
+                  //   title: "Pickup Date",
+                  //   readOnly: true,
+                  //   controller: dateController,
+                  //   textInputType: TextInputType.text,
+                  //   hintText: "Enter pickup date",
+                  //   onTap: () async {
+                  //     final date = await showDatePicker(
+                  //       context: context,
+                  //       firstDate: DateTime.now(),
+                  //       lastDate: DateTime.now().add(const Duration(days: 365)),
+                  //       initialDate: DateTime.now(),
+                  //     );
+                  //     if (date != null) {
+                  //       setState(() {
+                  //         selectedDate = date;
+                  //         dateController.text =
+                  //             "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}";
+                  //       });
+                  //     }
+                  //   },
+                  //   validator: Validators(context).requireField,
+                  // ),
 
-                  SimpleTextField(
-                    //  preffixImage: ImageUtility.gstIcon,
-                    title: "Pickup Date",
-                    readOnly: true,
-                    controller: dateController,
-                    textInputType: TextInputType.text,
-                    hintText: "Enter pickup date",
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                        initialDate: DateTime.now(),
-                      );
-                      if (date != null) {
-                        setState(() {
-                          selectedDate = date;
-                          dateController.text =
-                              "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}";
-                        });
-                      }
-                    },
-                    validator: Validators(context).requireField,
-                  ),
-
-                  SizedBox(height: 16.h),
+                // SizedBox(height: 16.h),
 
                   // SimpleTextField(
                   //   //   preffixImage: ImageUtility.gstIcon,
@@ -223,21 +270,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   //   },
                   // ),
 
-                  TruckDropdown(
-                    selectedTruck: selectedTimeDrop,
-                    title :"Select time",
-                    hintText :"Select time",
-                    truckTypes: [
-                      "morning",
-                      "afternoon",
-                      "evening",
-                      "flexible"],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedTimeDrop = value;
-                      });
-                    },
-                  ),
+                  // TruckDropdown(
+                  //   selectedTruck: selectedTimeDrop,
+                  //   title :"Select time",
+                  //   hintText :"Select time",
+                  //   truckTypes: [
+                  //     "morning",
+                  //     "afternoon",
+                  //     "evening",
+                  //     "flexible"],
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       selectedTimeDrop = value;
+                  //     });
+                  //   },
+                  // ),
 
 
 
@@ -245,34 +292,17 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
                   SimpleTextField(
                     //   preffixImage: ImageUtility.gstIcon,
-                    title: "Budget Range Minimum",
+                    title: "Budget",
                     controller: minBudgetController,
                     textInputType: TextInputType.number,
-                    hintText: "Enter minimum budget range",
+                    hintText: "Enter budget",
                     validator: Validators(context).requireField,
                   ),
 
                   SizedBox(height: 16.h),
 
-                  SimpleTextField(
-                    //  preffixImage: ImageUtility.gstIcon,
-                    title: "Budget Range Maximum",
-                    controller: maxBudgetController,
-                    textInputType: TextInputType.number,
-                    hintText: "Enter maximum budget range",
-                    validator: Validators(context).requireField,
-                  ),
 
-                  SizedBox(height: 16.h),
 
-                  SimpleTextField(
-                    //  preffixImage: ImageUtility.gstIcon,
-                    title: "Special Requirements",
-                    controller: specialRequirementsController,
-                    textInputType: TextInputType.text,
-                    hintText: "Enter special requirements",
-                    validator: Validators(context).requireField,
-                  ),
 
 
 
@@ -328,6 +358,74 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 }
+
+class _LocationInputCard extends StatelessWidget {
+  const _LocationInputCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: ColorUtility.color8D98AF),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    _dot(ColorUtility.colorEA580C),
+                    Container(
+                      width: 2,
+                      height: 36.h,
+                      color: Colors.grey.shade300,
+                    ),
+                    Image.asset(ImageUtility.unLoadingIconIcon, width: 18.w),
+                  ],
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Select Loading Location?",
+                        style: StyleUtility.inputTextStyle,
+                      ),
+                      Padding(
+                        padding: EdgeInsetsGeometry.symmetric(vertical: 8.h),
+                        child: Divider(color: ColorUtility.color6E6E6E),
+                      ),
+                      Text(
+                        "Select Unloading Location?",
+                        style: StyleUtility.inputTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  Widget _dot(Color color) {
+    return Container(
+      width: 16.w,
+      height: 16.w,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
 
 class TruckDropdown extends StatefulWidget {
   final String? hintText;

@@ -50,7 +50,7 @@ class SimpleTextField extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         Text(title,style: StyleUtility.inputTextStyle,),
-        SizedBox(height: 9.h),
+        SizedBox(height: 3.5.h),
         TextFormField(
           onTap: onTap,
           maxLength: maxLength,
@@ -61,7 +61,10 @@ class SimpleTextField extends StatelessWidget {
           validator: validator,
           textAlign: TextAlign.start,
           keyboardType: textInputType ?? TextInputType.text,
-          maxLines: maxLine ?? 1,
+         // maxLines: maxLine ?? 1,
+          maxLines: null,
+          minLines: 1,
+        //  keyboardType: TextInputType.multiline,
           style: StyleUtility.inputTextStyle,
           textAlignVertical: TextAlignVertical.center,
           inputFormatters: inputFormatter,

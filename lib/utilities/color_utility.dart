@@ -12,8 +12,8 @@ class ColorUtility {
 
 
   static const Color backgroundColor = Color(0xFFF5F6FA);
-  //static const Color textFieldBorderColor = Color(0xFFB1B1B1);
-  static const Color textFieldBorderColor = Color(0xFFE1E6EF);
+  static const Color textFieldBorderColor = Color(0xFFB1B1B1);
+ // static const Color textFieldBorderColor = Color(0xFFE1E6EF);
   static const Color cardBorderColor = Color(0xFFF0F1F5);
 
 

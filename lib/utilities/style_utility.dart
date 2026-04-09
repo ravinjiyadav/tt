@@ -10,13 +10,14 @@ class StyleUtility {
 
 
   static TextStyle inputTextStyle = GoogleFonts.manrope(
-      fontWeight: FontWeight.w500,
+    //  fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       fontSize: TextSizeUtility.textSize14,
       color: Colors.black);
 
 
   static TextStyle hintTextStyle = GoogleFonts.manrope(
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       fontSize: TextSizeUtility.textSize16,
       color: ColorUtility.colorA8AEBF);
 
@@ -79,7 +80,8 @@ class StyleUtility {
   static TextStyle appBarTextStyle = GoogleFonts.manrope(
       fontWeight: FontWeight.w600,
       fontSize: TextSizeUtility.textSize18,
-      color: Colors.black);
+    //  color: Colors.black);
+      color: Colors.white);
 
 
   static TextStyle manropeSemiBold18Color0E0E0E = GoogleFonts.manrope(
