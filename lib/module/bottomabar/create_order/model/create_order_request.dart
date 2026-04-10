@@ -1,76 +1,72 @@
 class CreateOrderRequest {
-  String? pickupCity;
-  String? dropoffCity;
   String? pickupAddress;
   String? dropoffAddress;
+  String? pickupPlaceId;
+  String? pickupPlaceName;
+  String? dropoffPlaceId;
+  String? dropoffPlaceName;
   double? pickupLat;
   double? pickupLng;
   double? dropoffLat;
   double? dropoffLng;
-  String? cargoWeight;
+  dynamic cargoWeight;
   String? cargoDescription;
-  String? preferredVehicleType;
-  String? pickupDate;
-  String? pickupTimePreference;
-  String? specialRequirements;
-  String? budgetRangeMin;
-  String? budgetRangeMax;
+  String? cargoMaterial;
+  int? vehicleCategoryId;
+  int? budget;
 
   CreateOrderRequest(
-      {this.pickupCity,
-        this.dropoffCity,
-        this.pickupAddress,
+      {this.pickupAddress,
         this.dropoffAddress,
+        this.pickupPlaceId,
+        this.pickupPlaceName,
+        this.dropoffPlaceId,
+        this.dropoffPlaceName,
         this.pickupLat,
         this.pickupLng,
         this.dropoffLat,
         this.dropoffLng,
         this.cargoWeight,
         this.cargoDescription,
-        this.preferredVehicleType,
-        this.pickupDate,
-        this.pickupTimePreference,
-        this.specialRequirements,
-        this.budgetRangeMin,
-        this.budgetRangeMax});
+        this.cargoMaterial,
+        this.vehicleCategoryId,
+        this.budget});
 
   CreateOrderRequest.fromJson(Map<String, dynamic> json) {
-    pickupCity = json['pickup_city'];
-    dropoffCity = json['dropoff_city'];
     pickupAddress = json['pickup_address'];
     dropoffAddress = json['dropoff_address'];
+    pickupPlaceId = json['pickup_place_id'];
+    pickupPlaceName = json['pickup_place_name'];
+    dropoffPlaceId = json['dropoff_place_id'];
+    dropoffPlaceName = json['dropoff_place_name'];
     pickupLat = json['pickup_lat'];
     pickupLng = json['pickup_lng'];
     dropoffLat = json['dropoff_lat'];
     dropoffLng = json['dropoff_lng'];
     cargoWeight = json['cargo_weight'];
     cargoDescription = json['cargo_description'];
-    preferredVehicleType = json['preferred_vehicle_type'];
-    pickupDate = json['pickup_date'];
-    pickupTimePreference = json['pickup_time_preference'];
-    specialRequirements = json['special_requirements'];
-    budgetRangeMin = json['budget_range_min'];
-    budgetRangeMax = json['budget_range_max'];
+    cargoMaterial = json['cargo_material'];
+    vehicleCategoryId = json['vehicle_category_id'];
+    budget = json['budget'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pickup_city'] = this.pickupCity;
-    data['dropoff_city'] = this.dropoffCity;
     data['pickup_address'] = this.pickupAddress;
     data['dropoff_address'] = this.dropoffAddress;
+    data['pickup_place_id'] = this.pickupPlaceId;
+    data['pickup_place_name'] = this.pickupPlaceName;
+    data['dropoff_place_id'] = this.dropoffPlaceId;
+    data['dropoff_place_name'] = this.dropoffPlaceName;
     data['pickup_lat'] = this.pickupLat;
     data['pickup_lng'] = this.pickupLng;
     data['dropoff_lat'] = this.dropoffLat;
     data['dropoff_lng'] = this.dropoffLng;
     data['cargo_weight'] = this.cargoWeight;
     data['cargo_description'] = this.cargoDescription;
-    data['preferred_vehicle_type'] = this.preferredVehicleType;
-    data['pickup_date'] = this.pickupDate;
-    data['pickup_time_preference'] = this.pickupTimePreference;
-    data['special_requirements'] = this.specialRequirements;
-    data['budget_range_min'] = this.budgetRangeMin;
-    data['budget_range_max'] = this.budgetRangeMax;
+    data['cargo_material'] = this.cargoMaterial;
+    data['vehicle_category_id'] = this.vehicleCategoryId;
+    data['budget'] = this.budget;
     return data;
   }
 }

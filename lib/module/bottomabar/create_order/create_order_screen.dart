@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -33,11 +34,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   TextEditingController dropAddressController = TextEditingController();
 
   TextEditingController cargoWeightController = TextEditingController();
-  TextEditingController cargoDescriptionController = TextEditingController();
+  TextEditingController cargoMaterialController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
-  TextEditingController minBudgetController = TextEditingController();
-  TextEditingController maxBudgetController = TextEditingController();
+  TextEditingController budgetController = TextEditingController();
   TextEditingController specialRequirementsController = TextEditingController();
 
   DateTime? selectedDate;
@@ -47,6 +47,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   String? countryCode;
 
   int gender = 1;
+
+  double? pickupLat;
+  double? pickupLng;
+  double? pickupId;
+
+  double? dropLat;
+  double? dropLng;
+  double? dropId;
 
   CreateOrderVm? createOrderVm;
 
@@ -100,8 +108,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       if (result != null) {
                         setState(() {
                           String locationName = result.description;
-                          var lat = double.tryParse(result.lat ?? "");
-                          var lng = double.tryParse(result.lng ?? "");
+                          pickupId = result.id;
+                          pickupLat = double.tryParse(result.lat ?? "");
+                          pickupLng = double.tryParse(result.lng ?? "");
                           pickupAddressController.text = locationName ?? "";
                         });
                       }
@@ -129,37 +138,26 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       if (result != null) {
                         setState(() {
                           String locationName = result.description;
-                          var lat = double.tryParse(result.lat ?? "");
-                          var lng = double.tryParse(result.lng ?? "");
+
                           dropAddressController.text = locationName ?? "";
+
+                          dropId = result.id;
+                          dropLat = double.tryParse(result.lat ?? "");
+                          dropLng = double.tryParse(result.lng ?? "");
                         });
                       }
                     },
                   ),
-                  // SizedBox(height: 16.h),
-                  //
-                  // SimpleTextField(
-                  //   // preffixImage: ImageUtility.userIcon,
-                  //   title: "Pickup City",
-                  //   controller: pickupCityController,
-                  //   hintText: "Enter pickup city",
-                  //   validator: Validators(context).requireField,
-                  // ),
-                  //
-                  // SizedBox(height: 16.h),
-                  //
-                  // SimpleTextField(
-                  //   // preffixImage: ImageUtility.userIcon,
-                  //   title: "Drop Off City",
-                  //   controller: dropCityController,
-                  //   hintText: "Enter drop off city",
-                  //   validator: Validators(context).requireField,
-                  // ),
+
                   SizedBox(height: 16.h),
 
                   SimpleTextField(
                     //  preffixImage: ImageUtility.emailIcon,
-                    title: "Cargo Weight",
+                    textInputType: TextInputType.number,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    title: "Cargo Weight in Tons",
                     controller: cargoWeightController,
                     hintText: "Cargo weight",
                     validator: Validators(context).requireField,
@@ -170,7 +168,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   SimpleTextField(
                     //   preffixImage: ImageUtility.gstIcon,
                     title: "Material Type",
-                    controller: cargoDescriptionController,
+                    controller: cargoMaterialController,
                     textInputType: TextInputType.text,
                     hintText: "Enter material type",
                     validator: Validators(context).requireField,
@@ -203,9 +201,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   //     });
                   //   },
                   // ),
-
-
-
                   Consumer<CreateOrderVm>(
                     builder: (context, provider, child) {
                       return TruckDropdown(
@@ -220,7 +215,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       );
                     },
                   ),
-
 
                   // SizedBox(height: 16.h),
                   //
@@ -305,15 +299,17 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   SimpleTextField(
                     //   preffixImage: ImageUtility.gstIcon,
                     title: "Budget",
-                    controller: minBudgetController,
+                    controller: budgetController,
                     textInputType: TextInputType.number,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     hintText: "Enter budget",
                     validator: Validators(context).requireField,
                   ),
 
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 32.h),
 
-                  SizedBox(height: 77.h),
                   CustomButton(
                     buttonText: "Create Order",
                     onTap: () {
@@ -321,23 +317,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         createOrderVm?.request = CreateOrderRequest(
                           pickupAddress: pickupAddressController.text.trim(),
                           dropoffAddress: dropAddressController.text.trim(),
-                          pickupCity: pickupCityController.text.trim(),
-                          dropoffCity: dropCityController.text.trim(),
-                          cargoWeight: cargoWeightController.text.trim(),
-                          cargoDescription: cargoDescriptionController.text,
-                          preferredVehicleType: "${selectedTruck?.id ?? 0}",
-                          pickupDate: dateController.text.trim(),
-                          pickupTimePreference: selectedTimeDrop,
-                          budgetRangeMin: minBudgetController.text.trim(),
-                          budgetRangeMax: maxBudgetController.text.trim(),
-                          specialRequirements: specialRequirementsController
-                              .text
-                              .trim(),
+                          pickupPlaceName: pickupAddressController.text.trim(),
+                          dropoffPlaceName: dropAddressController.text.trim(),
+                          cargoWeight: int.parse(cargoWeightController.text.trim()),
+                          cargoDescription: "d",
 
-                          pickupLat: 22.72,
-                          pickupLng: 75.86,
-                          dropoffLat: 22.96,
-                          dropoffLng: 76.05,
+                          pickupLat: pickupLat,
+                          pickupLng: pickupLng,
+                          dropoffLat: dropLat,
+                          dropoffLng: dropLng,
+
+                          pickupPlaceId: "${pickupId ?? 0}",
+                          dropoffPlaceId: "${dropId ?? 0}",
+                          cargoMaterial: cargoMaterialController.text,
+                          vehicleCategoryId: selectedTruck?.id,
+                          budget:int.parse(budgetController.text.trim())
                         );
 
                         CommonMethod.showLoadingDialog(context);
@@ -364,72 +358,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _LocationInputCard extends StatelessWidget {
-  const _LocationInputCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: ColorUtility.color8D98AF),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    _dot(ColorUtility.colorEA580C),
-                    Container(
-                      width: 2,
-                      height: 36.h,
-                      color: Colors.grey.shade300,
-                    ),
-                    Image.asset(ImageUtility.unLoadingIconIcon, width: 18.w),
-                  ],
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Select Loading Location?",
-                        style: StyleUtility.inputTextStyle,
-                      ),
-                      Padding(
-                        padding: EdgeInsetsGeometry.symmetric(vertical: 8.h),
-                        child: Divider(color: ColorUtility.color6E6E6E),
-                      ),
-                      Text(
-                        "Select Unloading Location?",
-                        style: StyleUtility.inputTextStyle,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _dot(Color color) {
-    return Container(
-      width: 16.w,
-      height: 16.w,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
@@ -585,10 +513,49 @@ class TruckDropdown extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             hintText: hintText ?? "Select Truck Type",
-            border: OutlineInputBorder(
+               border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
             ),
+            errorStyle: StyleUtility.errorTextStyle.copyWith(
+              fontSize: TextSizeUtility.textSize13.sp,
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: const BorderSide(
+                color: ColorUtility.textFieldBorderColor,
+              ),
+            ),
+
+            focusColor: Colors.white,
           ),
+
 
           items: truckTypes.map((truck) {
             return DropdownMenuItem<Vehiclecategory>(
