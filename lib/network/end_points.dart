@@ -20,6 +20,9 @@ class ApiEndPoints {
   String get orderRequestsList => "order-requests";
 
 
+  String get vehicleCategories => "vehicle-categories";
+
+
  // String get bidList(int id) => "/order-requests/${id}/bids";
 
 
