@@ -16,10 +16,10 @@ class OrderRepository {
   }
 
 
-  Future<VehicleCategory> vehicleCategories(var request) {
+  Future<VehicleCategoryModel> vehicleCategories(var request) {
     return dioHttpService
         .get(Endpoints.apiEndPoints.vehicleCategories,)
-        .then((value) => VehicleCategory.fromJson(value));
+        .then((value) => VehicleCategoryModel.fromJson(value));
   }
 
 

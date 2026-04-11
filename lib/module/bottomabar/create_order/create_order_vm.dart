@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 
 import '../../../../logger/app_logger.dart';
@@ -11,7 +13,40 @@ class CreateOrderVm extends ChangeNotifier {
   CreateOrderRequest request = CreateOrderRequest();
 
 
-  List<Vehiclecategory> vehicleCategory = [];
+
+  List<Data>categories = [];
+
+  Data? selectedCategory;
+  SubCategories? selectedSubCategory;
+  Variants? selectedVariant;
+
+  /// API se data set karne ke liye
+  void setData(List<Data> data) {
+    categories = data;
+
+    AppLogger.logD("Category length is ${jsonEncode(categories)}");
+    notifyListeners();
+  }
+
+  void selectCategory(Data category) {
+    selectedCategory = category;
+    selectedSubCategory = null;
+    selectedVariant = null;
+    notifyListeners();
+  }
+
+  void selectSubCategory(SubCategories subCategory) {
+    selectedSubCategory = subCategory;
+    selectedVariant = null;
+    notifyListeners();
+  }
+
+  void selectVariant(Variants variant) {
+    selectedVariant = variant;
+    notifyListeners();
+  }
+
+
 
   void createRide({
     required ValueChanged<String> onSuccess,
@@ -43,7 +78,7 @@ class CreateOrderVm extends ChangeNotifier {
         .then((value) {
       if (value.success == true) {
 
-        vehicleCategory = value.data ?? [];
+        setData(value.data ?? []);
 
         updateUi();
 

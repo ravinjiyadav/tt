@@ -1,3 +1,4 @@
+import 'package:book_your_truck/logger/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,7 +33,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   TextEditingController pickupAddressController = TextEditingController();
   TextEditingController dropAddressController = TextEditingController();
 
-  TextEditingController cargoWeightController = TextEditingController();
   TextEditingController cargoMaterialController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
@@ -55,11 +55,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   double? dropLng;
   double? dropId;
 
-  CreateOrderVm? createOrderVm;
+  late CreateOrderVm createOrderVm;
 
   final _formKey = GlobalKey<FormState>();
 
-  Vehiclecategory? selectedTruck;
   String? selectedTimeDrop;
 
   @override
@@ -100,7 +99,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                          const AutocompleteLocationScreen(),
+                              const AutocompleteLocationScreen(),
                         ),
                       );
 
@@ -130,7 +129,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                          const AutocompleteLocationScreen(),
+                              const AutocompleteLocationScreen(),
                         ),
                       );
 
@@ -148,19 +147,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     },
                   ),
 
-                  SizedBox(height: 16.h),
 
-                  SimpleTextField(
-                    //  preffixImage: ImageUtility.emailIcon,
-                    textInputType: TextInputType.number,
-                    inputFormatter: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    title: "Cargo Weight in Tons",
-                    controller: cargoWeightController,
-                    hintText: "Cargo weight",
-                    validator: Validators(context).requireField,
-                  ),
 
                   SizedBox(height: 16.h),
 
@@ -175,134 +162,89 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
                   SizedBox(height: 16.h),
 
-                  // SimpleTextField(
-                  //   //  preffixImage: ImageUtility.gstIcon,
-                  //   title: "Preferred Vehicle Type",
-                  //   controller: vehicleTypeController,
-                  //   textInputType: TextInputType.text,
-                  //   hintText: "Enter vehicle type",
-                  //   validator: Validators(context).requireField,
-                  // ),
-
-                  // TruckDropdown(
-                  //   selectedTruck: selectedTruck,
-                  //   title :"Select vehicle type",
-                  //   truckTypes: [
-                  //     "mini_truck",
-                  //     "small_truck",
-                  //     "medium_truck",
-                  //     "large_truck",
-                  //     "any",
-                  //   ],
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       selectedTruck = value;
-                  //     });
-                  //   },
-                  // ),
                   Consumer<CreateOrderVm>(
-                    builder: (context, provider, child) {
-                      return TruckDropdown(
-                        selectedTruck: selectedTruck,
-                        title: "Select vehicle type",
-                        truckTypes: createOrderVm!.vehicleCategory,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedTruck = value;
-                          });
-                        },
+                    builder: (context, vm, child) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          /// 🔹 CATEGORY DROPDOWN
+                          CommonDropdown<Data>(
+                            hint: "Select Vehicle Category",
+                            title: "Vehicle Category",
+                            value: vm.selectedCategory,
+                            items: vm.categories,
+                            itemLabel: (item) => item.categoryName ?? "",
+                            onChanged: vm.categories.isEmpty
+                                ? null
+                                : (value) {
+                                    if (value != null) {
+                                      vm.selectCategory(value);
+                                    }
+                                  },
+                          ),
+
+                          SizedBox(height: 16),
+
+                          CommonDropdown<SubCategories>(
+                            hint: "Select Sub Category",
+                            title: "Sub Category",
+
+                            value: vm.selectedSubCategory,
+                            items: vm.selectedCategory?.subCategories ?? [],
+                            itemLabel: (item) => item.type ?? "",
+                            onChanged: vm.selectedCategory == null
+                                ? null
+                                : (value) {
+                                    if (value != null) {
+                                      vm.selectSubCategory(value);
+                                    }
+                                  },
+                          ),
+
+                          SizedBox(height: 16.h),
+
+                          CommonDropdown<Variants>(
+                            hint: "Select Variant",
+                            title: "Variant",
+
+                            value: vm.selectedVariant,
+                            items: vm.selectedSubCategory?.variants ?? [],
+                            itemLabel: (item) =>
+                                "${item.weight ?? 0} Ton - ${item.length ?? 0} Feet",
+                            onChanged: vm.selectedSubCategory == null
+                                ? null
+                                : (value) {
+                                    if (value != null) {
+                                      vm.selectVariant(value);
+                                    }
+                                  },
+                          ),
+
+                          SizedBox(height: 30),
+
+                          // /// ✅ FINAL SELECTED DATA
+                          // if (vm.selectedVariant != null)
+                          //   Text(
+                          //     "Selected:\n"
+                          //     "${vm.selectedCategory?.categoryName} → "
+                          //     "${vm.selectedSubCategory?.type} → "
+                          //     "${vm.selectedVariant?.weight} Ton, "
+                          //     "${vm.selectedVariant?.length} m",
+                          //     style: TextStyle(fontWeight: FontWeight.bold),
+                          //   ),
+                        ],
                       );
                     },
                   ),
 
-                  // SizedBox(height: 16.h),
-                  //
-                  // SimpleTextField(
-                  //   //  preffixImage: ImageUtility.gstIcon,
-                  //   title: "Pickup Date",
-                  //   readOnly: true,
-                  //   controller: dateController,
-                  //   textInputType: TextInputType.text,
-                  //   hintText: "Enter pickup date",
-                  //   onTap: () async {
-                  //     final date = await showDatePicker(
-                  //       context: context,
-                  //       firstDate: DateTime.now(),
-                  //       lastDate: DateTime.now().add(const Duration(days: 365)),
-                  //       initialDate: DateTime.now(),
-                  //     );
-                  //     if (date != null) {
-                  //       setState(() {
-                  //         selectedDate = date;
-                  //         dateController.text =
-                  //             "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}";
-                  //       });
-                  //     }
-                  //   },
-                  //   validator: Validators(context).requireField,
-                  // ),
 
-                  // SizedBox(height: 16.h),
-
-                  // SimpleTextField(
-                  //   //   preffixImage: ImageUtility.gstIcon,
-                  //   //   isEnable: false,
-                  //   readOnly: true,
-                  //   title: "Pickup Time",
-                  //   controller: timeController,
-                  //   textInputType: TextInputType.text,
-                  //   hintText: "Select pickup time",
-                  //   validator: Validators(context).requireField,
-                  //   onTap: () async {
-                  //     final time = await showTimePicker(
-                  //       context: context,
-                  //       initialTime: TimeOfDay.now(),
-                  //       builder: (context, child) {
-                  //         return Theme(
-                  //           data: Theme.of(context).copyWith(
-                  //             useMaterial3: false, // ✅ IMPORTANT
-                  //           ),
-                  //
-                  //           child: child!,
-                  //         );
-                  //       },
-                  //     );
-                  //
-                  //     if (time != null) {
-                  //       setState(() {
-                  //         selectedTime = time;
-                  //         timeController.text = selectedTime!.format(context);
-                  //       });
-                  //       //  setState(() => selectedTime = time);
-                  //     }
-                  //   },
-                  // ),
-
-                  // TruckDropdown(
-                  //   selectedTruck: selectedTimeDrop,
-                  //   title :"Select time",
-                  //   hintText :"Select time",
-                  //   truckTypes: [
-                  //     "morning",
-                  //     "afternoon",
-                  //     "evening",
-                  //     "flexible"],
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       selectedTimeDrop = value;
-                  //     });
-                  //   },
-                  // ),
-                  SizedBox(height: 16.h),
 
                   SimpleTextField(
                     //   preffixImage: ImageUtility.gstIcon,
                     title: "Budget",
                     controller: budgetController,
                     textInputType: TextInputType.number,
-                    inputFormatter: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
+                    inputFormatter: [FilteringTextInputFormatter.digitsOnly],
                     hintText: "Enter budget",
                     validator: Validators(context).requireField,
                   ),
@@ -314,23 +256,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         createOrderVm?.request = CreateOrderRequest(
-                            pickupAddress: pickupAddressController.text.trim(),
-                            dropoffAddress: dropAddressController.text.trim(),
-                            pickupPlaceName: pickupAddressController.text.trim(),
-                            dropoffPlaceName: dropAddressController.text.trim(),
-                            cargoWeight: int.parse(cargoWeightController.text.trim()),
-                            cargoDescription: "d",
+                          pickupAddress: pickupAddressController.text.trim(),
+                          dropoffAddress: dropAddressController.text.trim(),
+                          pickupPlaceName: pickupAddressController.text.trim(),
+                          dropoffPlaceName: dropAddressController.text.trim(),
+                          cargoDescription: "d",
+                          pickupLat: pickupLat,
+                          pickupLng: pickupLng,
+                          dropoffLat: dropLat,
+                          dropoffLng: dropLng,
 
-                            pickupLat: pickupLat,
-                            pickupLng: pickupLng,
-                            dropoffLat: dropLat,
-                            dropoffLng: dropLng,
-
-                            pickupPlaceId: "${pickupId ?? 0}",
-                            dropoffPlaceId: "${dropId ?? 0}",
-                            cargoMaterial: cargoMaterialController.text,
-                            vehicleCategoryId: selectedTruck?.id,
-                            budget:int.parse(budgetController.text.trim())
+                          pickupPlaceId: "${pickupId ?? 0}",
+                          dropoffPlaceId: "${dropId ?? 0}",
+                          cargoMaterial: cargoMaterialController.text,
+                            vehicleCategoryId: createOrderVm?.selectedVariant?.id ?? 0,
+                          budget: int.parse(budgetController.text.trim()),
                         );
 
                         CommonMethod.showLoadingDialog(context);
@@ -361,131 +301,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 }
 
-//
-// class TruckDropdown extends StatefulWidget {
-//   final String? hintText;
-//   final String title;
-//   String? selectedTruck;
-//   final List<String> truckTypes;
-//   final Function(String?)? onChanged; // 👈 callback
-//
-//   TruckDropdown({
-//     super.key,
-//     this.hintText,
-//     required this.title,
-//     this.selectedTruck,
-//     required this.truckTypes,
-//     this.onChanged,
-//   });
-//
-//   @override
-//   State<TruckDropdown> createState() => _TruckDropdownState();
-// }
-//
-// class _TruckDropdownState extends State<TruckDropdown> {
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: .start,
-//
-//       children: [
-//         Text(widget.title, style: StyleUtility.inputTextStyle),
-//         SizedBox(height: 9.h),
-//
-//         DropdownButtonFormField<String>(
-//           value: widget.selectedTruck,
-//           isExpanded: true,
-//           icon: const Icon(Icons.keyboard_arrow_down),
-//           decoration: InputDecoration(
-//             isDense: true,
-//             contentPadding: EdgeInsets.only(
-//               left: 20.w,
-//               top: 16,
-//               bottom: 16,
-//               right: 5.w,
-//             ),
-//             filled: true,
-//             fillColor: Colors.white,
-//             hintStyle: StyleUtility.hintTextStyle,
-//             hintText: widget.hintText ?? "Select Truck Type",
-//             border: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//             errorStyle: StyleUtility.errorTextStyle.copyWith(
-//               fontSize: TextSizeUtility.textSize13.sp,
-//             ),
-//             disabledBorder: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//             enabledBorder: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//             focusedBorder: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//             focusedErrorBorder: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//             errorBorder: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(10.r),
-//               borderSide: const BorderSide(
-//                 color: ColorUtility.textFieldBorderColor,
-//               ),
-//             ),
-//
-//             focusColor: Colors.white,
-//           ),
-//           items: widget.truckTypes
-//               .map(
-//                 (truck) => DropdownMenuItem<String>(
-//                   value: truck,
-//                   child: Text(
-//                     truck.replaceAll("_", " ").toUpperCase(),
-//                     style: StyleUtility.inputTextStyle,
-//                   ),
-//                 ),
-//               )
-//               .toList(),
-//           onChanged: (value) {
-//             widget.onChanged?.call(value); // 👈 send value to parent
-//           },
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-class TruckDropdown extends StatelessWidget {
-  final String? hintText;
+class CommonDropdown<T> extends StatelessWidget {
+  final String hint;
+  final T? value;
+  final List<T> items;
+  final String Function(T) itemLabel;
+  final void Function(T?)? onChanged;
   final String title;
-  final Vehiclecategory? selectedTruck;
-  final List<Vehiclecategory> truckTypes;
-  final Function(Vehiclecategory?)? onChanged;
 
-  const TruckDropdown({
+  const CommonDropdown({
     super.key,
-    this.hintText,
+    required this.hint,
+    required this.value,
+    required this.items,
+    required this.itemLabel,
+    required this.onChanged,
     required this.title,
-    this.selectedTruck,
-    required this.truckTypes,
-    this.onChanged,
   });
 
   @override
@@ -494,13 +325,20 @@ class TruckDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: StyleUtility.inputTextStyle),
-        SizedBox(height: 9.h),
 
-        DropdownButtonFormField<Vehiclecategory>(
-          value: selectedTruck,
-          isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down),
+        SizedBox(height: 3.5.h),
+        DropdownButtonFormField<T>(
+          hint: Text(hint),
+          value: value,
+          items: items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Text(itemLabel(item)),
+            );
+          }).toList(),
+          onChanged: onChanged,
 
+          /// 🔥 Common Decoration (ek hi jagah manage hoga)
           decoration: InputDecoration(
             isDense: true,
             contentPadding: EdgeInsets.only(
@@ -511,9 +349,10 @@ class TruckDropdown extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.white,
-            hintText: hintText ?? "Select Truck Type",
+            hintStyle: StyleUtility.hintTextStyle,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
+              // borderSide: BorderSide.none,
               borderSide: const BorderSide(
                 color: ColorUtility.textFieldBorderColor,
               ),
@@ -554,19 +393,6 @@ class TruckDropdown extends StatelessWidget {
 
             focusColor: Colors.white,
           ),
-
-
-          items: truckTypes.map((truck) {
-            return DropdownMenuItem<Vehiclecategory>(
-              value: truck,
-              child: Text(
-                (truck.name ?? "").toUpperCase(),
-                style: StyleUtility.inputTextStyle,
-              ),
-            );
-          }).toList(),
-
-          onChanged: onChanged,
         ),
       ],
     );

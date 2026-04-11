@@ -9,7 +9,6 @@ class CreateOrderRequest {
   double? pickupLng;
   double? dropoffLat;
   double? dropoffLng;
-  dynamic cargoWeight;
   String? cargoDescription;
   String? cargoMaterial;
   int? vehicleCategoryId;
@@ -26,7 +25,6 @@ class CreateOrderRequest {
         this.pickupLng,
         this.dropoffLat,
         this.dropoffLng,
-        this.cargoWeight,
         this.cargoDescription,
         this.cargoMaterial,
         this.vehicleCategoryId,
@@ -43,7 +41,6 @@ class CreateOrderRequest {
     pickupLng = json['pickup_lng'];
     dropoffLat = json['dropoff_lat'];
     dropoffLng = json['dropoff_lng'];
-    cargoWeight = json['cargo_weight'];
     cargoDescription = json['cargo_description'];
     cargoMaterial = json['cargo_material'];
     vehicleCategoryId = json['vehicle_category_id'];
@@ -62,7 +59,6 @@ class CreateOrderRequest {
     data['pickup_lng'] = this.pickupLng;
     data['dropoff_lat'] = this.dropoffLat;
     data['dropoff_lng'] = this.dropoffLng;
-    data['cargo_weight'] = this.cargoWeight;
     data['cargo_description'] = this.cargoDescription;
     data['cargo_material'] = this.cargoMaterial;
     data['vehicle_category_id'] = this.vehicleCategoryId;

@@ -1,15 +1,15 @@
-class VehicleCategory {
+class VehicleCategoryModel {
   bool? success;
-  List<Vehiclecategory>? data;
+  List<Data>? data;
 
-  VehicleCategory({this.success, this.data});
+  VehicleCategoryModel({this.success, this.data});
 
-  VehicleCategory.fromJson(Map<String, dynamic> json) {
+  VehicleCategoryModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = <Vehiclecategory>[];
+      data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Vehiclecategory.fromJson(v));
+        data!.add(new Data.fromJson(v));
       });
     }
   }
@@ -24,47 +24,77 @@ class VehicleCategory {
   }
 }
 
-class Vehiclecategory {
+class Data {
+  String? categoryName;
+  List<SubCategories>? subCategories;
+
+  Data({this.categoryName, this.subCategories});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    categoryName = json['category_name'];
+    if (json['sub_categories'] != null) {
+      subCategories = <SubCategories>[];
+      json['sub_categories'].forEach((v) {
+        subCategories!.add(new SubCategories.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['category_name'] = this.categoryName;
+    if (this.subCategories != null) {
+      data['sub_categories'] =
+          this.subCategories!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class SubCategories {
+  String? type;
+  List<Variants>? variants;
+
+  SubCategories({this.type, this.variants});
+
+  SubCategories.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    if (json['variants'] != null) {
+      variants = <Variants>[];
+      json['variants'].forEach((v) {
+        variants!.add(new Variants.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['type'] = this.type;
+    if (this.variants != null) {
+      data['variants'] = this.variants!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Variants {
   int? id;
-  String? name;
-  String? description;
-  dynamic typicalCapacityMin;
-  dynamic typicalCapacityMax;
-  bool? isActive;
-  String? createdAt;
-  String? updatedAt;
+  dynamic weight;
+  dynamic length;
 
-  Vehiclecategory(
-      {this.id,
-        this.name,
-        this.description,
-        this.typicalCapacityMin,
-        this.typicalCapacityMax,
-        this.isActive,
-        this.createdAt,
-        this.updatedAt});
+  Variants({this.id, this.weight, this.length});
 
-  Vehiclecategory.fromJson(Map<String, dynamic> json) {
+  Variants.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    typicalCapacityMin = json['typical_capacity_min'];
-    typicalCapacityMax = json['typical_capacity_max'];
-    isActive = json['is_active'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    weight = json['weight'];
+    length = json['length'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['typical_capacity_min'] = this.typicalCapacityMin;
-    data['typical_capacity_max'] = this.typicalCapacityMax;
-    data['is_active'] = this.isActive;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
+    data['weight'] = this.weight;
+    data['length'] = this.length;
     return data;
   }
 }
