@@ -36,6 +36,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController budgetController = TextEditingController();
+  TextEditingController advancePercentController = TextEditingController();
   TextEditingController specialRequirementsController = TextEditingController();
   TextEditingController truckPreferenceController = TextEditingController();
 
@@ -60,6 +61,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String? selectedTimeDrop;
+  String selectedPriceUnit = "per truck";
+  String selectedPaymentMode = "advance";
 
   @override
   void initState() {
@@ -79,6 +82,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     dateController.dispose();
     timeController.dispose();
     budgetController.dispose();
+    advancePercentController.dispose();
     specialRequirementsController.dispose();
     truckPreferenceController.dispose();
     super.dispose();
@@ -131,6 +135,33 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         );
       },
     );
+  }
+
+  Future<void> _openPricePaymentTermsSheet() async {
+    FocusScope.of(context).unfocus();
+
+    final result = await showModalBottomSheet<_PricePaymentTermsResult>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return _PricePaymentTermsSheet(
+          initialAmount: budgetController.text,
+          initialPriceUnit: selectedPriceUnit,
+          initialPaymentMode: selectedPaymentMode,
+          initialAdvancePercent: advancePercentController.text,
+        );
+      },
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        budgetController.text = result.amount;
+        selectedPriceUnit = result.priceUnit;
+        selectedPaymentMode = result.paymentMode;
+        advancePercentController.text = result.advancePercent;
+      });
+    }
   }
 
   @override
@@ -251,14 +282,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
                   SizedBox(height: 30.h),
 
-                  SimpleTextField(
-                    //   preffixImage: ImageUtility.gstIcon,
-                    title: "Budget",
-                    controller: budgetController,
-                    textInputType: TextInputType.number,
-                    inputFormatter: [FilteringTextInputFormatter.digitsOnly],
-                    hintText: "Enter budget",
-                    validator: Validators(context).requireField,
+                  _PricePaymentTermsField(
+                    amount: budgetController.text,
+                    priceUnit: selectedPriceUnit,
+                    paymentMode: selectedPaymentMode,
+                    onTap: _openPricePaymentTermsSheet,
                   ),
 
                   SizedBox(height: 32.h),
@@ -283,7 +311,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           cargoMaterial: cargoMaterialController.text,
                           vehicleCategoryId:
                               createOrderVm.selectedVariant?.id ?? 0,
-                          budget: int.parse(budgetController.text.trim()),
+                          budget: int.tryParse(budgetController.text.trim()),
                         );
 
                         CommonMethod.showLoadingDialog(context);
@@ -402,6 +430,544 @@ class _TruckPreferenceField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _PricePaymentTermsField extends StatelessWidget {
+  const _PricePaymentTermsField({
+    required this.amount,
+    required this.priceUnit,
+    required this.paymentMode,
+    required this.onTap,
+  });
+
+  final String amount;
+  final String priceUnit;
+  final String paymentMode;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasAmount = amount.trim().isNotEmpty;
+    final paymentText = paymentMode == "advance" ? "Advance Pay" : "To Pay";
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Price & Payment Terms", style: StyleUtility.inputTextStyle),
+        SizedBox(height: 3.5.h),
+        Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(8.r),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: ColorUtility.textFieldBorderColor),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 38.w,
+                    height: 38.w,
+                    decoration: BoxDecoration(
+                      color: ColorUtility.colorEA580C.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: const Icon(
+                      Icons.payments_outlined,
+                      color: ColorUtility.colorEA580C,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          hasAmount ? "Rs $amount / $priceUnit" : "Add price",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: hasAmount
+                              ? StyleUtility.inputTextStyle
+                              : StyleUtility.hintTextStyle,
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          hasAmount
+                              ? paymentText
+                              : "Expected price and payment mode",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: StyleUtility.manropeMedium14Color767C8C,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: ColorUtility.color767C8C,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PricePaymentTermsResult {
+  const _PricePaymentTermsResult({
+    required this.amount,
+    required this.priceUnit,
+    required this.paymentMode,
+    required this.advancePercent,
+  });
+
+  final String amount;
+  final String priceUnit;
+  final String paymentMode;
+  final String advancePercent;
+}
+
+class _PricePaymentTermsSheet extends StatefulWidget {
+  const _PricePaymentTermsSheet({
+    required this.initialAmount,
+    required this.initialPriceUnit,
+    required this.initialPaymentMode,
+    required this.initialAdvancePercent,
+  });
+
+  final String initialAmount;
+  final String initialPriceUnit;
+  final String initialPaymentMode;
+  final String initialAdvancePercent;
+
+  @override
+  State<_PricePaymentTermsSheet> createState() =>
+      _PricePaymentTermsSheetState();
+}
+
+class _PricePaymentTermsSheetState extends State<_PricePaymentTermsSheet> {
+  late final TextEditingController _amountController;
+  late final TextEditingController _advancePercentController;
+  late String _priceUnit;
+  late String _paymentMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _amountController = TextEditingController(text: widget.initialAmount);
+    _advancePercentController = TextEditingController(
+      text: widget.initialAdvancePercent,
+    );
+    _priceUnit = widget.initialPriceUnit;
+    _paymentMode = widget.initialPaymentMode;
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _advancePercentController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    Navigator.pop(
+      context,
+      _PricePaymentTermsResult(
+        amount: _amountController.text.trim(),
+        priceUnit: _priceUnit,
+        paymentMode: _paymentMode,
+        advancePercent: _advancePercentController.text.trim(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(22.r)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 22.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 48.w,
+                        height: 5.h,
+                        decoration: BoxDecoration(
+                          color: ColorUtility.colorD6D6D8,
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 28.h),
+                    Text(
+                      "Price & Payment Terms",
+                      style: StyleUtility.manropeSemiBold18Color0E0E0E.copyWith(
+                        fontSize: TextSizeUtility.textSize20.sp,
+                      ),
+                    ),
+                    SizedBox(height: 26.h),
+                    Text("Price Unit", style: StyleUtility.inputTextStyle),
+                    SizedBox(height: 12.h),
+                    Row(
+                      children: [
+                        _PriceUnitButton(
+                          label: "Per Ton",
+                          value: "per ton",
+                          selectedValue: _priceUnit,
+                          onTap: () {
+                            setState(() {
+                              _priceUnit = "per ton";
+                            });
+                          },
+                        ),
+                        SizedBox(width: 12.w),
+                        _PriceUnitButton(
+                          label: "Per Truck",
+                          value: "per truck",
+                          selectedValue: _priceUnit,
+                          onTap: () {
+                            setState(() {
+                              _priceUnit = "per truck";
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    _SheetDivider(),
+                    Text(
+                      "Expected Price (Optional)",
+                      style: StyleUtility.inputTextStyle,
+                    ),
+                    SizedBox(height: 12.h),
+                    _ExpectedPriceField(
+                      controller: _amountController,
+                      priceUnit: _priceUnit,
+                    ),
+                    _SheetDivider(),
+                    Text("Payment Mode", style: StyleUtility.inputTextStyle),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _PaymentModeOption(
+                            title: "Advance Pay",
+                            value: "advance",
+                            selectedValue: _paymentMode,
+                            onTap: () {
+                              setState(() {
+                                _paymentMode = "advance";
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 18.w),
+                        Expanded(
+                          child: _PaymentModeOption(
+                            title: "To Pay",
+                            value: "to_pay",
+                            selectedValue: _paymentMode,
+                            onTap: () {
+                              setState(() {
+                                _paymentMode = "to_pay";
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (_paymentMode == "advance") ...[
+                      SizedBox(height: 14.h),
+                      _AdvancePercentField(
+                        controller: _advancePercentController,
+                      ),
+                    ],
+                    SizedBox(height: 26.h),
+                    CustomButton(
+                      buttonText: "NEXT",
+                      backgroundColor: ColorUtility.colorEA580C,
+                      onTap: _save,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PriceUnitButton extends StatelessWidget {
+  const _PriceUnitButton({
+    required this.label,
+    required this.value,
+    required this.selectedValue,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final String selectedValue;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = value == selectedValue;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8.r),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 14.h),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? ColorUtility.colorEA580C.withValues(alpha: 0.1)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: isSelected
+                  ? ColorUtility.colorEA580C
+                  : ColorUtility.textFieldBorderColor,
+              width: isSelected ? 1.4 : 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: StyleUtility.inputTextStyle.copyWith(
+              color: isSelected
+                  ? ColorUtility.colorEA580C
+                  : ColorUtility.color474C59,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpectedPriceField extends StatelessWidget {
+  const _ExpectedPriceField({
+    required this.controller,
+    required this.priceUnit,
+  });
+
+  final TextEditingController controller;
+  final String priceUnit;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: TextSizeUtility.buttonHeight),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        style: StyleUtility.inputTextStyle,
+        decoration: InputDecoration(
+          isDense: true,
+          prefixIconConstraints: BoxConstraints(minWidth: 52.w),
+          suffixIconConstraints: BoxConstraints(minWidth: 88.w),
+          prefixIcon: Container(
+            width: 52.w,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              border: Border(
+                right: BorderSide(color: ColorUtility.colorE1E6EF),
+              ),
+            ),
+            child: Text("Rs", style: StyleUtility.inputTextStyle),
+          ),
+          suffixIcon: Padding(
+            padding: EdgeInsets.only(right: 14.w),
+            child: Align(
+              widthFactor: 1,
+              alignment: Alignment.centerRight,
+              child: Text(
+                priceUnit,
+                style: StyleUtility.manropeMedium14Color767C8C,
+              ),
+            ),
+          ),
+          hintText: "Enter amount",
+          hintStyle: StyleUtility.hintTextStyle,
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 14.w,
+            vertical: 15.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: ColorUtility.textFieldBorderColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: ColorUtility.textFieldBorderColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(color: ColorUtility.colorEA580C),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PaymentModeOption extends StatelessWidget {
+  const _PaymentModeOption({
+    required this.title,
+    required this.value,
+    required this.selectedValue,
+    required this.onTap,
+  });
+
+  final String title;
+  final String value;
+  final String selectedValue;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = value == selectedValue;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8.r),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: 28.w,
+            height: 28.w,
+            padding: EdgeInsets.all(5.w),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected
+                    ? ColorUtility.colorEA580C
+                    : ColorUtility.colorD6D6D8,
+                width: 1.8,
+              ),
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? ColorUtility.colorEA580C
+                    : Colors.transparent,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Flexible(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: StyleUtility.manropeSemiBold16Color19191A,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdvancePercentField extends StatelessWidget {
+  const _AdvancePercentField({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 120.w,
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(3),
+        ],
+        style: StyleUtility.inputTextStyle,
+        decoration: InputDecoration(
+          isDense: true,
+          suffixText: "%",
+          suffixStyle: StyleUtility.inputTextStyle,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 15.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: ColorUtility.textFieldBorderColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(
+              color: ColorUtility.textFieldBorderColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: const BorderSide(color: ColorUtility.colorEA580C),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SheetDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 22.h),
+      child: const Divider(height: 1, color: ColorUtility.colorE1E6EF),
     );
   }
 }
