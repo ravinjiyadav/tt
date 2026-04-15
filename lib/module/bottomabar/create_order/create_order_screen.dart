@@ -118,6 +118,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     }
   }
 
+  void _showOrderSuccessDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return _OrderSuccessDialog(
+          onDone: () {
+            Navigator.pop(dialogContext);
+            AppRoute.bottomBarScreen(context);
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -274,9 +289,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         CommonMethod.showLoadingDialog(context);
                         createOrderVm.createRide(
                           onSuccess: (v) {
-                            Navigator.pop(context);
-                            AppRoute.bottomBarScreen(context);
-                            AppNotifier.showSuccessSnackBar(message: v);
+                            Navigator.of(context, rootNavigator: true).pop();
+                            if (!mounted) {
+                              return;
+                            }
+                            _showOrderSuccessDialog();
                           },
                           onFailure: (v) {
                             Navigator.pop(context);
@@ -385,6 +402,69 @@ class _TruckPreferenceField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _OrderSuccessDialog extends StatelessWidget {
+  const _OrderSuccessDialog({required this.onDone});
+
+  final VoidCallback onDone;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(22.w, 28.h, 22.w, 22.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 72.w,
+                height: 72.w,
+                decoration: BoxDecoration(
+                  color: ColorUtility.color4FCC48.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Container(
+                    width: 48.w,
+                    height: 48.w,
+                    decoration: const BoxDecoration(
+                      color: ColorUtility.color4FCC48,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: Colors.white,
+                      size: 30.sp,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                "Load posted successfully",
+                textAlign: TextAlign.center,
+                style: StyleUtility.manropeSemiBold18Color0E0E0E,
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                "We will start receiving calls from truck owners soon.",
+                textAlign: TextAlign.center,
+                style: StyleUtility.manropeMedium14Color767C8C,
+              ),
+              SizedBox(height: 24.h),
+              CustomButton(buttonText: "Done", onTap: onDone),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
