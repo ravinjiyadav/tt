@@ -106,7 +106,58 @@ class LoadCard extends StatelessWidget {
     return details.isEmpty ? "Cargo not available" : details.join(" | ");
   }
 
+  String? get _priceTypeLabel =>
+      _formatExpectedPriceType(order.expectedPriceType);
+
+  bool get _shouldShowAdvance =>
+      order.paymentMethod == "advance_pay" || _hasAmount(order.advanceAmount);
+
   String get _createdAt => _formatReadableDate(order.createdAt);
+
+  String? _formatExpectedPriceType(dynamic value) {
+    final priceType = value?.toString().trim().toLowerCase();
+    if (priceType?.isNotEmpty != true) {
+      return null;
+    }
+
+    switch (priceType!.replaceAll("-", "_").replaceAll(" ", "_")) {
+      case "per_ton":
+        return "Per Ton";
+      case "per_truck":
+        return "Per Truck";
+      default:
+        return value.toString();
+    }
+  }
+
+  bool _hasAmount(dynamic value) {
+    if (value == null) {
+      return false;
+    }
+
+    if (value is num) {
+      return value > 0;
+    }
+
+    return (num.tryParse(value.toString()) ?? 0) > 0;
+  }
+
+  String _formatCurrency(dynamic value) {
+    if (value == null) {
+      return "₹ 0";
+    }
+
+    final amount = num.tryParse(value.toString());
+    if (amount == null) {
+      return "₹ $value";
+    }
+
+    final formattedAmount = amount % 1 == 0
+        ? amount.toInt().toString()
+        : amount.toStringAsFixed(2);
+
+    return "₹ $formattedAmount";
+  }
 
   String _formatReadableDate(String? value) {
     if (value?.trim().isNotEmpty != true) {
@@ -191,12 +242,31 @@ class LoadCard extends StatelessWidget {
                       style: StyleUtility.manropeRegular14Color8D98AF,
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      "₹ ${order.totalExpectedAmount ?? 0}",
-                      style: StyleUtility.manropeSemiBold18Color0E0E0E.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        Text(
+                          "₹ ${order.expectedPrice ?? 0}",
+                          style: StyleUtility.manropeSemiBold18Color0E0E0E
+                              .copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        if (_priceTypeLabel != null)
+                          _PriceTypeBadge(label: _priceTypeLabel!),
+                      ],
                     ),
+                    if (_shouldShowAdvance) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        "Advance ${_formatCurrency(order.advanceAmount)}",
+                        style: StyleUtility.manropeRegular14Color8D98AF
+                            .copyWith(
+                              color: ColorUtility.colorEA580C,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -324,6 +394,31 @@ class _StatusChip extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: StyleUtility.manropeSemiBold12ColorBlack.copyWith(color: color),
+      ),
+    );
+  }
+}
+
+class _PriceTypeBadge extends StatelessWidget {
+  final String label;
+
+  const _PriceTypeBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: ColorUtility.colorEA580C.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: StyleUtility.manropeSemiBold12ColorBlack.copyWith(
+          color: ColorUtility.colorEA580C,
+        ),
       ),
     );
   }

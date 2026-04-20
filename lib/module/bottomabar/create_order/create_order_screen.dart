@@ -333,7 +333,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               ? int.tryParse(
                                   advancePercentController.text.trim(),
                                 )
-                              : null,
+                              : 0,
                         );
 
                         CommonMethod.showLoadingDialog(context);
