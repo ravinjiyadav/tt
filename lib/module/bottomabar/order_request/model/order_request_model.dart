@@ -25,6 +25,9 @@ class OrderRequestModel {
 }
 
 class Data {
+  dynamic? totalExpectedAmount;
+  dynamic? advanceAmount;
+  dynamic? remainingAmount;
   int? id;
   int? customerId;
   String? pickupAddress;
@@ -40,43 +43,57 @@ class Data {
   String? cargoDescription;
   String? cargoMaterial;
   int? vehicleCategoryId;
-  dynamic budget;
   String? status;
   String? expiresAt;
-  dynamic selectedBidId;
-  dynamic bidCount;
+  dynamic? selectedBidId;
+  int? bidCount;
+  dynamic? expectedPrice;
+  dynamic? expectedPriceType;
+  dynamic? estimatedWeightTons;
+  String? paymentMethod;
+  dynamic? advancePaymentPercentage;
   String? createdAt;
   String? updatedAt;
   VehicleCategory? vehicleCategory;
   Customer? customer;
 
   Data(
-      {this.id,
-        this.customerId,
-        this.pickupAddress,
-        this.dropoffAddress,
-        this.pickupPlaceId,
-        this.pickupPlaceName,
-        this.pickupLat,
-        this.pickupLng,
-        this.dropoffPlaceId,
-        this.dropoffPlaceName,
-        this.dropoffLat,
-        this.dropoffLng,
-        this.cargoDescription,
-        this.cargoMaterial,
-        this.vehicleCategoryId,
-        this.budget,
-        this.status,
-        this.expiresAt,
-        this.selectedBidId,
-        this.bidCount,
-        this.createdAt,
-        this.updatedAt,
-        this.vehicleCategory,
-        this.customer});
+      {this.totalExpectedAmount,
+      this.advanceAmount,
+      this.remainingAmount,
+      this.id,
+      this.customerId,
+      this.pickupAddress,
+      this.dropoffAddress,
+      this.pickupPlaceId,
+      this.pickupPlaceName,
+      this.pickupLat,
+      this.pickupLng,
+      this.dropoffPlaceId,
+      this.dropoffPlaceName,
+      this.dropoffLat,
+      this.dropoffLng,
+      this.cargoDescription,
+      this.cargoMaterial,
+      this.vehicleCategoryId,
+      this.status,
+      this.expiresAt,
+      this.selectedBidId,
+      this.bidCount,
+      this.expectedPrice,
+      this.expectedPriceType,
+      this.estimatedWeightTons,
+      this.paymentMethod,
+      this.advancePaymentPercentage,
+      this.createdAt,
+      this.updatedAt,
+      this.vehicleCategory,
+      this.customer});
 
   Data.fromJson(Map<String, dynamic> json) {
+    totalExpectedAmount = json['total_expected_amount'];
+    advanceAmount = json['advance_amount'];
+    remainingAmount = json['remaining_amount'];
     id = json['id'];
     customerId = json['customer_id'];
     pickupAddress = json['pickup_address'];
@@ -92,11 +109,15 @@ class Data {
     cargoDescription = json['cargo_description'];
     cargoMaterial = json['cargo_material'];
     vehicleCategoryId = json['vehicle_category_id'];
-    budget = json['budget'];
     status = json['status'];
     expiresAt = json['expires_at'];
     selectedBidId = json['selected_bid_id'];
     bidCount = json['bid_count'];
+    expectedPrice = json['expected_price'];
+    expectedPriceType = json['expected_price_type'];
+    estimatedWeightTons = json['estimated_weight_tons'];
+    paymentMethod = json['payment_method'];
+    advancePaymentPercentage = json['advance_payment_percentage'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     vehicleCategory = json['vehicleCategory'] != null
@@ -109,6 +130,9 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total_expected_amount'] = this.totalExpectedAmount;
+    data['advance_amount'] = this.advanceAmount;
+    data['remaining_amount'] = this.remainingAmount;
     data['id'] = this.id;
     data['customer_id'] = this.customerId;
     data['pickup_address'] = this.pickupAddress;
@@ -124,11 +148,16 @@ class Data {
     data['cargo_description'] = this.cargoDescription;
     data['cargo_material'] = this.cargoMaterial;
     data['vehicle_category_id'] = this.vehicleCategoryId;
-    data['budget'] = this.budget;
+  
     data['status'] = this.status;
     data['expires_at'] = this.expiresAt;
     data['selected_bid_id'] = this.selectedBidId;
     data['bid_count'] = this.bidCount;
+    data['expected_price'] = this.expectedPrice;
+    data['expected_price_type'] = this.expectedPriceType;
+    data['estimated_weight_tons'] = this.estimatedWeightTons;
+    data['payment_method'] = this.paymentMethod;
+    data['advance_payment_percentage'] = this.advancePaymentPercentage;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
     if (this.vehicleCategory != null) {
@@ -145,8 +174,8 @@ class VehicleCategory {
   int? id;
   String? bodyType;
   String? wheels;
-  dynamic weight;
-  dynamic length;
+  dynamic? weight;
+  int? length;
 
   VehicleCategory(
       {this.id, this.bodyType, this.wheels, this.weight, this.length});

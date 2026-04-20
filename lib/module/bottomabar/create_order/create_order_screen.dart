@@ -64,6 +64,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   String selectedPriceUnit = "per truck";
   String selectedPaymentMode = "advance";
 
+  String get _apiPaymentMethod {
+    return selectedPaymentMode == "advance" ? "advance_pay" : "pay_on_delivery";
+  }
+
+  String get _apiExpectedPriceType {
+    return selectedPriceUnit == "per ton" ? "per_ton" : "per_truck";
+  }
+
   @override
   void initState() {
     super.initState();
@@ -311,7 +319,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           cargoMaterial: cargoMaterialController.text,
                           vehicleCategoryId:
                               createOrderVm.selectedVariant?.id ?? 0,
-                          budget: int.tryParse(budgetController.text.trim()),
+                          budget: 1,
+                          expectedPrice: int.tryParse(
+                            budgetController.text.trim(),
+                          ),
+                          expectedPriceType: _apiExpectedPriceType,
+                          paymentMethod: _apiPaymentMethod,
+                          estimatedWeightTons: _parseEstimatedWeightTons(
+                            createOrderVm.selectedVariant?.weight,
+                          ),
+                          advancePaymentPercentage:
+                              selectedPaymentMode == "advance"
+                              ? int.tryParse(
+                                  advancePercentController.text.trim(),
+                                )
+                              : null,
                         );
 
                         CommonMethod.showLoadingDialog(context);
@@ -1601,6 +1623,24 @@ class _TruckPreferenceEmptyState extends StatelessWidget {
 
 String _variantLabel(Variants variant) {
   return "${variant.weight ?? 0} Ton - ${variant.length ?? 0} Feet";
+}
+
+dynamic _parseEstimatedWeightTons(dynamic weight) {
+  if (weight == null) {
+    return null;
+  }
+
+  if (weight is num) {
+    return weight;
+  }
+
+  final match = RegExp(r'\d+(\.\d+)?').firstMatch(weight.toString());
+  final value = match?.group(0);
+  if (value == null) {
+    return null;
+  }
+
+  return value.contains(".") ? double.tryParse(value) : int.tryParse(value);
 }
 
 String _truckPreferenceLabel(

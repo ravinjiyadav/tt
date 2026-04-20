@@ -192,7 +192,7 @@ class LoadCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "₹ ${order.budget ?? 0}",
+                      "₹ ${order.totalExpectedAmount ?? 0}",
                       style: StyleUtility.manropeSemiBold18Color0E0E0E.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
